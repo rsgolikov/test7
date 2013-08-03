@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[TestViewController3 viewDidLoad]:TestViewController3.m">
+      </ContextState>
+      <ContextState
+         contextName = "+[TestViewController getCGRectPosTextField:]:TestViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_bannerView.frame.size.height">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[ColorListViewController tableView:numberOfRowsInSection:]:ColorListViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[colorListDict ount]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[TestViewController addResult]:TestViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "managedObjectContext">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
