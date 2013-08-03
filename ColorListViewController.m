@@ -133,9 +133,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    int cn = self.navigationController.viewControllers.count;
-    //[self.view setNeedsDisplay];
-//    [[self.navigationController.viewControllers objectAtIndex:cn - 2] setNeedsDisplay];
      if (indexPath.section==1){
         [tesDefaultSettings setDefaultValueColor:[self currentColor] :[ColorListViewController colorFromHexString:[colorListDict objectForKey:[colorNames objectAtIndex:indexPath.row]]]];
         [self.navigationController popViewControllerAnimated:YES];
