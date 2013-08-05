@@ -18,6 +18,7 @@
     double tesDelayWhenDisappear;
     UIButton *tesStartStop;
     NSManagedObjectContext *MOC;
+    int shColumn;
 }
 @property (weak, nonatomic) IBOutlet UINavigationBar *nb;
 @property (strong, nonatomic) NSMutableArray *shArrButton;
@@ -26,6 +27,8 @@
 @property (nonatomic, strong) UITextField *tesTimerValue;
 @property (nonatomic, strong) UIButton *tesStartStop;
 @property (nonatomic, retain) NSManagedObjectContext *MOC;
+-(int) getShColumn;
+-(void) setShColumn:(int) value;
 
 +(UITextField *) getPosTextField: (int) pos;
 

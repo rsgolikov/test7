@@ -29,12 +29,20 @@ CGRect currentSize;
 @synthesize nb=_nb;
 @synthesize shArrButton;
 @synthesize shArrValue;
-const int shColumn = 5;
+//const int shColumn = 5;
 const int shTopDiff =1;
 @synthesize tesTimer1 = _tesTimer1;
 @synthesize tesTimerValue;
 @synthesize tesStartStop;
 @synthesize MOC;
+//@synthesize shColumn;
+
+-(int) getShColumn{
+    return shColumn;
+}
+-(void) setShColumn:(int) value{
+    shColumn = value;
+}
 
 -(void) addResult{
     History *history = (History *)[NSEntityDescription insertNewObjectForEntityForName:@"History" inManagedObjectContext:[self MOC]];
@@ -111,6 +119,43 @@ const int shTopDiff =1;
     int shTopPos;
     int shBtnWith;
     int shBtnHeigh;
+    int shColumn = [tesDefaultSettings getDeafultValueInt:@"shulteSize"];
+    if (pos==shColumn*shColumn+1){
+        if (shColumn == 5) shTopPos = shScreenSizeWith; else shTopPos = shScreenSizeWith-2;
+        shLeftPos= 0;
+        shBtnWith = shScreenSizeWith;
+        if (shColumn == 7) { //разобраться с размерами активной части экрана
+            shBtnHeigh = 47;
+        } else {
+            shBtnHeigh = 44;
+            shTopPos +=1;
+        }
+    } else {
+        const int i = (pos % shColumn);
+        const int j = (pos / shColumn);
+        shBtnWith =  (shScreenSizeWith)/shColumn;
+        shLeftPos = (shScreenSizeWith-shBtnWith*shColumn)/2 + shBtnWith* i;
+        shTopPos = (shScreenSizeWith-shBtnWith*shColumn)/2 + shBtnWith* j;
+        shBtnHeigh = shBtnWith;
+        const int pointsLeft = shScreenSizeWith - shBtnWith * shColumn;
+        if ((pointsLeft + 1)/2 - 1 >= i) {
+            shLeftPos -= (pointsLeft + 1)/2 - i;
+            shBtnWith += 1;
+        } else if ((shColumn - pointsLeft/2) <= i) {
+            shLeftPos += i - (shColumn - pointsLeft/2);
+            shBtnWith += 1;
+        }
+    }
+    return CGRectMake(shLeftPos, shTopPos, shBtnWith, shBtnHeigh);
+}
+/*
++(CGRect) getCGRectPosTextField: (int) pos{
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    int shScreenSizeWith = screenBounds.size.width;
+    int shLeftPos;
+    int shTopPos;
+    int shBtnWith;
+    int shBtnHeigh;
     if (pos==shColumn*shColumn+1){
         shTopPos = shScreenSizeWith+shTopDiff-shColumn+1;
         shLeftPos= 0;
@@ -129,6 +174,7 @@ const int shTopDiff =1;
     }
     return CGRectMake(shLeftPos, shTopPos, shBtnWith, shBtnHeigh);
 }
+ */
 +(UITextField *) getPosTextField: (int) pos{
     UITextField *txt =[[UITextField alloc] init];
     [txt setFont:[UIFont systemFontOfSize:32]];
@@ -139,6 +185,7 @@ const int shTopDiff =1;
     txt.textAlignment =  NSTextAlignmentCenter;
     txt.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter; 
     txt.frame = [TestViewController getCGRectPosTextField:pos];
+    int shColumn = [tesDefaultSettings getDeafultValueInt:@"shulteSize"];
     if (pos==shColumn*shColumn/2){
         txt.layer.borderWidth=4;
         txt.layer.borderColor=[[UIColor redColor] CGColor];
@@ -214,6 +261,8 @@ const int shTopDiff =1;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    shColumn = [tesDefaultSettings getDeafultValueInt:@"shulteSize"];
+
     UIImage *imageHis = [UIImage imageNamed:@"11-clock.png"];
     UIBarButtonItem *history = [[UIBarButtonItem alloc] initWithImage:imageHis style:UIBarButtonItemStylePlain target:self action:@selector(butHistory:)];
     UIImage *imageSetup = [UIImage imageNamed:@"19-gear.png"];
