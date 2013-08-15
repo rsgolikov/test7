@@ -12,6 +12,4 @@
 
 @property (nonatomic, weak) UISegmentedControl *shulteSize;
 
-@property (weak, nonatomic) IBOutlet UITableView *tv;
-
 @end

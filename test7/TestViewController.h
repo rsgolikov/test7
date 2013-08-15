@@ -19,7 +19,10 @@
     UIButton *tesStartStop;
     NSManagedObjectContext *MOC;
     int shColumn;
+    UIColor *fontColor;
+    UIColor *backgroundColor;
 }
+
 @property (weak, nonatomic) IBOutlet UINavigationBar *nb;
 @property (strong, nonatomic) NSMutableArray *shArrButton;
 @property (strong, nonatomic) NSMutableArray *shArrValue;
@@ -27,10 +30,8 @@
 @property (nonatomic, strong) UITextField *tesTimerValue;
 @property (nonatomic, strong) UIButton *tesStartStop;
 @property (nonatomic, retain) NSManagedObjectContext *MOC;
--(int) getShColumn;
--(void) setShColumn:(int) value;
 
-+(UITextField *) getPosTextField: (int) pos;
+-(UITextField *) getPosTextField: (int) pos;
 
 -(void)stRandom;
 -(IBAction)shRandButton: (id)sender;

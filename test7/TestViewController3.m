@@ -164,7 +164,6 @@
 }
 - (void)viewDidUnload {
     [self setTableView:nil];
-    [self setTv:nil];
     [super viewDidUnload];
     
 }

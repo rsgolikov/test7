@@ -29,20 +29,13 @@ CGRect currentSize;
 @synthesize nb=_nb;
 @synthesize shArrButton;
 @synthesize shArrValue;
-//const int shColumn = 5;
 const int shTopDiff =1;
 @synthesize tesTimer1 = _tesTimer1;
 @synthesize tesTimerValue;
 @synthesize tesStartStop;
 @synthesize MOC;
-//@synthesize shColumn;
 
--(int) getShColumn{
-    return shColumn;
-}
--(void) setShColumn:(int) value{
-    shColumn = value;
-}
+
 
 -(void) addResult{
     History *history = (History *)[NSEntityDescription insertNewObjectForEntityForName:@"History" inManagedObjectContext:[self MOC]];
@@ -112,80 +105,52 @@ const int shTopDiff =1;
 -(IBAction)butHelp:(id)sender{
 }
 
-+(CGRect) getCGRectPosTextField: (int) pos{
+-(CGRect) getCGRectPosTextField: (int) pos{
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
-    int shScreenSizeWith = screenBounds.size.width;
+    int shScreenSizeWidth = screenBounds.size.width;
     int shLeftPos;
     int shTopPos;
-    int shBtnWith;
-    int shBtnHeigh;
-    int shColumn = [tesDefaultSettings getDeafultValueInt:@"shulteSize"];
+    int shBtnWidth;
+    int shBtnHeight;
     if (pos==shColumn*shColumn+1){
-        if (shColumn == 5) shTopPos = shScreenSizeWith; else shTopPos = shScreenSizeWith-2;
+        if (shColumn == 5) shTopPos = shScreenSizeWidth; else shTopPos = shScreenSizeWidth-2;
         shLeftPos= 0;
-        shBtnWith = shScreenSizeWith;
+        shBtnWidth = shScreenSizeWidth;
         if (shColumn == 7) { //разобраться с размерами активной части экрана
-            shBtnHeigh = 47;
+            shBtnHeight = 47;
         } else {
-            shBtnHeigh = 44;
+            shBtnHeight = 44;
             shTopPos +=1;
         }
     } else {
         const int i = (pos % shColumn);
         const int j = (pos / shColumn);
-        shBtnWith =  (shScreenSizeWith)/shColumn;
-        shLeftPos = (shScreenSizeWith-shBtnWith*shColumn)/2 + shBtnWith* i;
-        shTopPos = (shScreenSizeWith-shBtnWith*shColumn)/2 + shBtnWith* j;
-        shBtnHeigh = shBtnWith;
-        const int pointsLeft = shScreenSizeWith - shBtnWith * shColumn;
+        shBtnWidth =  (shScreenSizeWidth)/shColumn;
+        shLeftPos = (shScreenSizeWidth-shBtnWidth*shColumn)/2 + shBtnWidth* i;
+        shTopPos = (shScreenSizeWidth-shBtnWidth*shColumn)/2 + shBtnWidth* j;
+        shBtnHeight = shBtnWidth;
+        const int pointsLeft = shScreenSizeWidth - shBtnWidth * shColumn;
         if ((pointsLeft + 1)/2 - 1 >= i) {
             shLeftPos -= (pointsLeft + 1)/2 - i;
-            shBtnWith += 1;
+            shBtnWidth += 1;
         } else if ((shColumn - pointsLeft/2) <= i) {
             shLeftPos += i - (shColumn - pointsLeft/2);
-            shBtnWith += 1;
+            shBtnWidth += 1;
         }
     }
-    return CGRectMake(shLeftPos, shTopPos, shBtnWith, shBtnHeigh);
+    return CGRectMake(shLeftPos, shTopPos, shBtnWidth, shBtnHeight);
 }
-/*
-+(CGRect) getCGRectPosTextField: (int) pos{
-    CGRect screenBounds = [[UIScreen mainScreen] bounds];
-    int shScreenSizeWith = screenBounds.size.width;
-    int shLeftPos;
-    int shTopPos;
-    int shBtnWith;
-    int shBtnHeigh;
-    if (pos==shColumn*shColumn+1){
-        shTopPos = shScreenSizeWith+shTopDiff-shColumn+1;
-        shLeftPos= 0;
-        shBtnWith = shScreenSizeWith-1;
-        if (shColumn == 7) { //разобраться с размерами активной части экрана 
-            shBtnHeigh = 50;
-        } else {
-            shBtnHeigh = 47;
-            shTopPos +=1;
-        }
-    } else {
-        shBtnWith =  (shScreenSizeWith-shColumn+1)/shColumn;
-        shLeftPos = (shScreenSizeWith-shBtnWith*shColumn)/2 + shBtnWith* (pos % shColumn);
-        shTopPos = (shScreenSizeWith-shBtnWith*shColumn)/2 + shBtnWith* (pos / shColumn);
-        shBtnHeigh = shBtnWith;
-    }
-    return CGRectMake(shLeftPos, shTopPos, shBtnWith, shBtnHeigh);
-}
- */
-+(UITextField *) getPosTextField: (int) pos{
+
+-(UITextField *) getPosTextField: (int) pos{
     UITextField *txt =[[UITextField alloc] init];
     [txt setFont:[UIFont systemFontOfSize:32]];
-    [txt setTextColor:[tesDefaultSettings getDefaultValueColor:@"font"]];
+    [txt setTextColor:fontColor];
     [txt setBorderStyle:UITextBorderStyleLine];
-    [txt setBackgroundColor:[tesDefaultSettings getDefaultValueColor:@"background"]];
+    [txt setBackgroundColor:backgroundColor];
     txt.enabled =false;
     txt.textAlignment =  NSTextAlignmentCenter;
     txt.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter; 
-    txt.frame = [TestViewController getCGRectPosTextField:pos];
-    int shColumn = [tesDefaultSettings getDeafultValueInt:@"shulteSize"];
+    txt.frame = [self getCGRectPosTextField:pos];
     if (pos==shColumn*shColumn/2){
         txt.layer.borderWidth=4;
         txt.layer.borderColor=[[UIColor redColor] CGColor];
@@ -207,8 +172,6 @@ const int shTopDiff =1;
  }
 
 -(void)setCellColor{
-    UIColor *fontColor = [tesDefaultSettings getDefaultValueColor:@"font"];
-    UIColor *backgroundColor = [tesDefaultSettings getDefaultValueColor:@"background"];
     for(int i=0;i<shColumn*shColumn;i++){
         UITextField *tf = [shArrButton objectAtIndex:i];
         [tf setTextColor:fontColor];
@@ -217,6 +180,14 @@ const int shTopDiff =1;
     [tesStartStop setBackgroundColor:backgroundColor];
     [tesStartStop setTitleColor:fontColor forState:UIControlStateNormal];
     [[tesStartStop titleLabel] setBackgroundColor:backgroundColor];
+}
+
+-(void) tesStopTimer{
+    [tesStartStop setTitle:@"START" forState:UIControlStateNormal];
+    for(int i=0;i<shColumn*shColumn;i++){
+        [[shArrButton objectAtIndex:i] setText:[NSString stringWithFormat:@"*"]];
+    }
+    [_tesTimer1 stopTimer:self];
 }
 
 -(IBAction)tesDoTimer:(id)sender{
@@ -228,12 +199,11 @@ const int shTopDiff =1;
         tesDelayWhenDisappear = 0;
         [tesStartStop setTitle:@"STOP" forState:UIControlStateNormal];
         tesStartValue = [NSDate timeIntervalSinceReferenceDate];
+        [_tesTimer1 doTimer:self];
     } else {
-        [tesStartStop setTitle:@"START" forState:UIControlStateNormal];
         [self addResult];
-       
+        [self tesStopTimer];
     }
-    [_tesTimer1 doTimer:self];
 }
 
 
@@ -246,15 +216,57 @@ const int shTopDiff =1;
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
     if (_tesTimer1.tesTimerState == YES) {
-        tesDelayWhenDisappear += [NSDate timeIntervalSinceReferenceDate]-tesStartValue ;
+        [self tesStopTimer];
+        self.navigationItem.title=[NSString stringWithFormat:@"%1.2f", 0.0];
     }
 }
+
+-(void) addTable{
+    shColumn = [tesDefaultSettings getDeafultValueInt:@"shulteSize"];
+    for(int i=0;i<shColumn*shColumn;i++){
+        [shArrButton addObject:[self getPosTextField:i]];
+        [shArrValue addObject:[NSNumber numberWithInteger:i+1]];
+        [self.view addSubview:[shArrButton objectAtIndex:i]];
+        [[shArrButton objectAtIndex:i] setText:@"*"];
+    }
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button addTarget:self
+               action:@selector(tesDoTimer:)
+     forControlEvents:UIControlEventTouchDown];
+    [button setTitle:@"START" forState:UIControlStateNormal];
+    button.frame = [self getCGRectPosTextField:shColumn*shColumn+1];
+    tesStartStop = button;
+    [tesStartStop setBackgroundColor:backgroundColor];
+    [tesStartStop setTitleColor:fontColor forState:UIControlStateNormal];
+    [[tesStartStop titleLabel] setBackgroundColor:backgroundColor];
+    [self.view addSubview:button];
+
+}
+
+-(void) clearView{
+    for(UIView *subview in [self.view subviews]) {
+        if ([subview isKindOfClass: [UITextField class]]) {
+            [subview removeFromSuperview];
+        } else
+            if([subview isKindOfClass: [UIButton class]]){
+                [subview removeFromSuperview];
+            }
+    }
+    [shArrButton removeAllObjects];
+    [shArrValue removeAllObjects];
+    [self addTable];
+}
+
 -(void) viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     if (_tesTimer1.tesTimerState == YES) {
         tesStartValue = [NSDate timeIntervalSinceReferenceDate] ;
     }
     [self setCellColor];
+    if (shColumn!=[tesDefaultSettings getDeafultValueInt:@"shulteSize"]){
+        [self clearView];
+        
+    }
     //перекрасить?
 }
 
@@ -262,6 +274,8 @@ const int shTopDiff =1;
 {
     [super viewDidLoad];
     shColumn = [tesDefaultSettings getDeafultValueInt:@"shulteSize"];
+    fontColor = [tesDefaultSettings getDefaultValueColor:@"font"];
+    backgroundColor = [tesDefaultSettings getDefaultValueColor:@"background"];
 
     UIImage *imageHis = [UIImage imageNamed:@"11-clock.png"];
     UIBarButtonItem *history = [[UIBarButtonItem alloc] initWithImage:imageHis style:UIBarButtonItemStylePlain target:self action:@selector(butHistory:)];
@@ -275,7 +289,7 @@ const int shTopDiff =1;
     shArrValue = [[NSMutableArray alloc] init];
     
     for(int i=0;i<shColumn*shColumn;i++){
-        [shArrButton addObject:[TestViewController getPosTextField:i]];
+        [shArrButton addObject:[self getPosTextField:i]];
         [shArrValue addObject:[NSNumber numberWithInteger:i+1]];
         [self.view addSubview:[shArrButton objectAtIndex:i]];
         [[shArrButton objectAtIndex:i] setText:@"*"];
@@ -285,7 +299,7 @@ const int shTopDiff =1;
                action:@selector(tesDoTimer:)
      forControlEvents:UIControlEventTouchDown];
     [button setTitle:@"START" forState:UIControlStateNormal];
-    button.frame = [TestViewController getCGRectPosTextField:shColumn*shColumn+1];
+    button.frame = [self getCGRectPosTextField:shColumn*shColumn+1];
     tesStartStop = button;
     [self.view addSubview:button];
     self.navigationItem.title=[NSString stringWithFormat:@"%1.2f", 0.0];
@@ -296,7 +310,6 @@ const int shTopDiff =1;
     _bannerView.frame = bannerFrame;
     [self.view addSubview:_bannerView];
     
- 
     
 }
 
